@@ -51,27 +51,6 @@ def split(me, item_list):
 
     return null_list
 
-def parse_mtl(mtl_file):
-    materials = {}
-    current_material = None
-
-    with open(mtl_file, 'r') as file:
-        for line in file:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-
-            parts = line.split()
-            keyword, *values = parts
-
-            if keyword == 'newmtl':
-                current_material = values[0]
-                materials[current_material] = {}
-            elif current_material:
-                materials[current_material][keyword] = values
-
-    return materials
-
 def mtl_setup(mat_lib_node, req_mtls, tex_path):
     for mtl in req_mtls:
         mat_builder = mat_lib_node.createNode('arnold_materialbuilder', node_name=mtl)
