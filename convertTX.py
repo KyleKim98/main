@@ -28,6 +28,16 @@ class DynamicInputDialog(QtWidgets.QDialog):
 
         self.layout.addLayout(self.dir_layout)
 
+        # Preset Container
+        self.preset_layout = QtWidgets.QHBoxLayout()
+        self.preset_input = QtWidgets.QComboBox(self)
+        self.preset_input.addItems(['Kitbash', 'Maxtree'])
+        self.preset_input.setCurrentIndex(0)
+        self.preset_layout.addWidget(self.preset_input)
+        self.layout.addLayout(self.preset_layout)
+
+        self.preset_input.currentIndexChanged.connect(lambda:self.changePreset())
+
         # Number of fields control (manual input + "+" and "-" buttons)
         self.num_layout = QtWidgets.QHBoxLayout()
         self.num_label = QtWidgets.QLabel("Number of Input Pairs:")
@@ -83,6 +93,38 @@ class DynamicInputDialog(QtWidgets.QDialog):
         self.input_pairs[2][1].setCurrentIndex(1)
         self.input_pairs[4][1].setCurrentIndex(1)
 
+        self.changePreset()
+
+    def changePreset(self):
+        preset_name = self.preset_input.currentText()
+
+        if preset_name == 'Kitbash':
+            self.update_fields(8)
+            kitbash_keys = ['basecolor', 'roughness', 'normal', 'metallic', 'opacity','ao','height','refraction']
+
+            for enum,i in enumerate(kitbash_keys):
+                self.input_pairs[enum][0].setText(i)
+                self.input_pairs[enum][2].setText('png')
+
+                if i == 'basecolor':
+                    self.input_pairs[1][1].setCurrentIndex(0)
+                else:
+                    self.input_pairs[enum][1].setCurrentIndex(1)
+        elif preset_name == 'Maxtree':
+            self.update_fields(5)
+            maxtree_keys = ['albedo', 'roughness', 'normal', 'translucency', 'opacity']
+
+            try:
+                for enum, i in enumerate(self.input_pairs):
+                    self.input_pairs[enum][0].setText(maxtree_keys[enum])
+                    self.input_pairs[enum][2].setText('jpg')
+            except IndexError:
+                pass
+
+            # set colorspace to Raw for Roughness,Noraml and Opacity
+            self.input_pairs[1][1].setCurrentIndex(1)
+            self.input_pairs[2][1].setCurrentIndex(1)
+            self.input_pairs[4][1].setCurrentIndex(1)
 
     def choose_directory(self):
         """Opens a directory chooser and sets the selected path."""

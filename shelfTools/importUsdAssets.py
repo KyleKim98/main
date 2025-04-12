@@ -1,10 +1,10 @@
-import os
+import os,hou
 from KK import utils
 from importlib import reload
 reload(utils)
 
 def search_folders(root_folder):
-
+    root_folder = utils.correctPath(root_folder)
     stage = hou.node('/stage')
     merge_node = stage.createNode('switch')
     
@@ -23,5 +23,4 @@ def search_folders(root_folder):
     
 
 root_folder = hou.ui.selectFile(title="Select a folder", file_type=hou.fileType.Directory)
-root_folder = utils.correct_path(root_folder)
 search_folders(root_folder)

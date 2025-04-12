@@ -216,7 +216,7 @@ def alias_to_abs(string,seperator):
             temp[enum] = hou.getenv(i[1:])
     return seperator.join(temp)
 
-def correct_path(string):
+def correctPath(string):
 
     if '/' in string:
         temp = alias_to_abs(string,'/')

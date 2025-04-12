@@ -22,34 +22,36 @@ def split(me, item_list):
     geo_node = me.parent()
     null_list = []
 
-    for enum, item in enumerate(item_list):
-        offset = hou.Vector2(pos[0] + enum * 1.5, pos[1])
+    for enum,i in enumerate(item_list):
 
-        blast = geo_node.createNode('blast', node_name=f"blast_{item}")
-        blast.setPosition(offset - hou.Vector2(0, 2.5))
-        blast.setInput(0, me)
-        blast.parm('group').set(f'@item={item}')
-        blast.parm('negate').set(1)
+            blast_node = geo_node.createNode('blast')
+            blast_node.setPosition(hou.Vector2(pos[0]+(float(enum)*1.5),pos[1]-2.5))
+            blast_node.setInput(0,me)
+            
+            blast_node.parm('group').set('@item='+i)
+            blast_node.parm('negate').set(1)
+            
+            wrangle_node = geo_node.createNode('attribwrangle')
+            wrangle_node.parm('class').set('detail')
+            wrangle_node.parm('snippet').set('s[]@material_list = uniquevals(0, "prim" ,"shop_materialpath");')
+            wrangle_node.setInput(0,blast_node)
+            wrangle_node.setPosition(hou.Vector2(pos[0]+(float(enum)*1.5),pos[1]-5))
+            
+            promoteB_node = geo_node.createNode('attribpromote')
+            promoteB_node.setPosition(hou.Vector2(pos[0]+(float(enum)*1.5),pos[1]-7.5))
+            promoteB_node.parm('inname').set('item')
+            promoteB_node.parm('inclass').set(1)
+            promoteB_node.parm('outclass').set(0)
+            promoteB_node.setInput(0,wrangle_node)      
 
-        wrangle = geo_node.createNode('attribwrangle', node_name=f"wrangle_{item}")
-        wrangle.setPosition(offset - hou.Vector2(0, 5))
-        wrangle.setInput(0, blast)
-        wrangle.parm('class').set(2)  # detail
-        wrangle.parm('snippet').set('s[]@material_list = uniquevals(0, "prim", "shop_materialpath");')
-
-        promote = geo_node.createNode('attribpromote', node_name=f"promote_{item}")
-        promote.setPosition(offset - hou.Vector2(0, 7.5))
-        promote.setInput(0, wrangle)
-        promote.parm('inname').set('item')
-        promote.parm('inclass').set(1)
-        promote.parm('outclass').set(0)
-
-        null = geo_node.createNode('null', node_name=f'OUT_{item}')
-        null.setPosition(offset - hou.Vector2(0, 10))
-        null.setInput(0, promote)
-        null_list.append(null)
-
-    return null_list
+            null_node = geo_node.createNode('null')
+            null_node.setPosition(hou.Vector2(pos[0]+(float(enum)*1.5),pos[1]-10))
+            null_node.setName('OUT_'+i)
+            null_node.setInput(0,promoteB_node)      
+            
+            null_list.append(null_node)    
+            
+    return null_list     
 
 def mtl_setup(mat_lib_node, req_mtls, tex_path):
     for mtl in req_mtls:
