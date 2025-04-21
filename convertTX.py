@@ -112,7 +112,7 @@ class DynamicInputDialog(QtWidgets.QDialog):
                     self.input_pairs[enum][1].setCurrentIndex(1)
         elif preset_name == 'Maxtree':
             self.update_fields(5)
-            maxtree_keys = ['albedo', 'roughness', 'normal', 'translucency', 'opacity']
+            maxtree_keys = ['albedo', 'glossiness', 'normal', 'translucency', 'opacity']
 
             try:
                 for enum, i in enumerate(self.input_pairs):
@@ -122,9 +122,7 @@ class DynamicInputDialog(QtWidgets.QDialog):
                 pass
 
             # set colorspace to Raw for Roughness,Noraml and Opacity
-            self.input_pairs[1][1].setCurrentIndex(1)
-            self.input_pairs[2][1].setCurrentIndex(1)
-            self.input_pairs[4][1].setCurrentIndex(1)
+            self.input_pairs[3][1].setCurrentIndex(0)
 
     def choose_directory(self):
         """Opens a directory chooser and sets the selected path."""
@@ -254,7 +252,7 @@ def setup(directory,value):
     global obj
     global topnet
 
-    tex_path = utils.tailSlash(directory)
+    tex_path = utils.correctPath(directory)
 
     obj = hou.node('/obj')
     topnet = obj.createNode('topnet')

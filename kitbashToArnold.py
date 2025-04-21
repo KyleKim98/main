@@ -121,6 +121,7 @@ def lop_setup(me, item_list, null_list):
         domelight = comp_out.createNode('domelight::2.0')
         domelight.setInput(0, comp_out.node('THUMBNAIL'))
         comp_out.node('thumbnail_render').setInput(0, domelight)
+
         output_list.append(comp_out)
 
         fetch = ropnet.createNode('fetch', node_name=null_node.name())
@@ -129,7 +130,7 @@ def lop_setup(me, item_list, null_list):
 
         if enum == len(null_list) - 1 and render_script == 1:
             comp_out.parm('postrender').set(
-                'exec(open("C:/Users/USER/Documents/houdini20.5/python3.11libs/KK/postrenderscript.py").read())'
+                'exec(open("C:/Users/USER/Documents/houdini20.5/python3.11libs/KK/kitbashpostrenderscript.py").read())'
             )
             comp_out.parm('lpostrender').set('python')
 
@@ -149,9 +150,6 @@ def main(kwargs):
     global single_mode, single_mode_index, render_script, export_usd
 
     me = kwargs['node']
-
-    # reload(kitbashToArnold)
-    # reload(utils)
 
     mtl_file = me.parm('mtl_file').evalAsString()
     tex_path = me.parm('tex_path').evalAsString()

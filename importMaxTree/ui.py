@@ -1,4 +1,5 @@
 from PySide2 import QtWidgets
+from importlib import reload
 import hou
 from . import importer
 
@@ -87,7 +88,7 @@ def run():
     global dialog  # Keep reference to prevent garbage collection
     dialog = UserInputDialog(hou.ui.mainQtWindow())
     result = dialog.exec_()
-
+    reload(importer)
     if result == 1:
         importer.loadfbx(dialog.dirs)
 

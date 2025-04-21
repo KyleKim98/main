@@ -21,6 +21,6 @@ def search_folders(root_folder):
     
     stage.layoutChildren()
     
-
-root_folder = hou.ui.selectFile(title="Select a folder", file_type=hou.fileType.Directory)
-search_folders(root_folder)
+def run():
+    root_folder = hou.ui.selectFile(title="Select a folder", file_type=hou.fileType.Directory)
+    search_folders(root_folder)

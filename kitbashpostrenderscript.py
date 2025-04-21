@@ -1,7 +1,6 @@
 import os,hou,shutil,sys
 from KK import utils
 from importlib import reload
-#import KK.shelfTools.importUsdAssets.search_folders as search_folders
 
 reload(utils)
 
@@ -14,7 +13,6 @@ for node in hou.node('/obj').children():
         for i in node.children():
             if i.type().name() == 'USER::kitbash_converter::1.0':
                 kitbash_node = i
-
 
 old_texture_folder =  utils.correctPath(kitbash_node.parm('tex_path').evalAsString())
 save_dir = utils.correctPath(kitbash_node.parm('save_path').evalAsString())
@@ -61,7 +59,6 @@ for i in os.listdir(download_dir):
 
 shutil.copytree(save_dir,usd_library)
 shutil.copy(hip_file,original_library)
-
 os.mkdir(usd_library+'/Arnold')
 
 for i in os.listdir(usd_library):
@@ -75,3 +72,5 @@ for i in os.listdir(download_dir):
     if i == hip_name:
         shutil.rmtree(download_dir+i)
         break
+
+hou.hipFile.save()

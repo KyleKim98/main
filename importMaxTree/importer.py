@@ -1,4 +1,5 @@
 import hou,os
+from .. import utils
 
 def loadfbx(dirs):
     paths = []
@@ -6,9 +7,9 @@ def loadfbx(dirs):
         path = str(i.replace('\\','/'))
         paths.append(path+'/')
 
-    FBX_path = paths[0]
-    tex_path = paths[1]
-    save_path = paths[2]
+    FBX_path = utils.correctPath(paths[0])
+    tex_path = utils.correctPath(paths[1])
+    save_path = utils.correctPath(paths[2])
 
     obj = hou.node('/obj')
 
@@ -20,10 +21,10 @@ def loadfbx(dirs):
     for i in FBXs:
 
        file_name = i.split('.')[0]
-       file_path = FBX_path+'/'+i
+       file_path = FBX_path+i
        extension = i.split('.')[-1]
 
-       if extension == 'fbx':
+       if extension == 'fbx' or extension == 'FBX':
            geo_node = obj.createNode('geo')
            geo_node.setName(file_name)
            geo_node.setDisplayFlag(0)

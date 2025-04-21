@@ -83,7 +83,7 @@ def buildArnoldShader(standard_surface,mat_dict,tex_path):
             image_node.parm('color_family').set('Utility')
             image_node.parm('color_space').set('Raw')
 
-            if 'albedo' in file or 'basecolor' in file:
+            if 'albedo' in file or 'basecolor' in file or 'diffuse' in file:
                 image_node.parm('color_family').set('ACES')
                 image_node.parm('color_space').set('ACEScg')
                 image_node.setName('basecolor')    
@@ -114,7 +114,7 @@ def buildArnoldShader(standard_surface,mat_dict,tex_path):
                 standard_surface.setNamedInput('metalness',image_node,0)      
                 existing_images.append('metallic')
 
-            elif 'ao' in file:                
+            elif 'ao' in file or 'ambient' in file:                
                 image_node.setName('ao')
                 standard_surface.setNamedInput('base',image_node,0)            
                 existing_images.append('ao')  
