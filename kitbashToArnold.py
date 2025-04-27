@@ -148,7 +148,7 @@ def lop_setup(me, item_list, null_list):
 def main(kwargs):
     global mtl_file, tex_path, save_path, use_mtl
     global single_mode, single_mode_index, render_script, export_usd
-
+    reload(utils)
     me = kwargs['node']
 
     mtl_file = me.parm('mtl_file').evalAsString()

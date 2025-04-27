@@ -1,8 +1,10 @@
 from PySide2 import QtWidgets
 from importlib import reload
-import hou
+import hou,os
 from . import importer
 
+hipname = hou.getenv('HIPNAME')
+download_dir = 'C:/Users/USER/Downloads/'
 class UserInputDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(UserInputDialog, self).__init__(parent)
@@ -36,6 +38,11 @@ class UserInputDialog(QtWidgets.QDialog):
         layout.addLayout(button_layout)
 
         self.setLayout(layout)
+
+        src_dir = download_dir+hipname+'/'
+        self.dir1_layout.itemAt(1).widget().setText(src_dir+hipname+'_FBX')
+        self.dir2_layout.itemAt(1).widget().setText(src_dir+hipname+'_Maps')
+        self.dir3_layout.itemAt(1).widget().setText('$HIP/USD')
 
     def create_directory_input(self, label_text):
 
@@ -85,7 +92,7 @@ class UserInputDialog(QtWidgets.QDialog):
         msg_box.exec_()  # Show the warning dialog
 
 def run():
-    global dialog  # Keep reference to prevent garbage collection
+    global dialog
     dialog = UserInputDialog(hou.ui.mainQtWindow())
     result = dialog.exec_()
     reload(importer)

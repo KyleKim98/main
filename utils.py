@@ -109,6 +109,11 @@ def buildArnoldShader(standard_surface,mat_dict,tex_path):
                 standard_surface.setNamedInput('normal',normal_node,0)   
                 existing_images.append('normal')
 
+            elif 'specular' in file:                
+                image_node.setName('specular')
+                standard_surface.setNamedInput('specular',image_node,0)      
+                existing_images.append('specular')
+
             elif 'metallic' in file:                
                 image_node.setName('metallic')
                 standard_surface.setNamedInput('metalness',image_node,0)      
@@ -136,17 +141,25 @@ def buildArnoldShader(standard_surface,mat_dict,tex_path):
                 standard_surface.setNamedInput('subsurface_color',image_node,0)   
                 existing_images.append('translucency')             
 
-            elif 'opacity' in file:
-                
+            elif 'opacity' in file:                
                 image_node.setName('opacity')
                 standard_surface.setNamedInput('opacity',image_node,0)        
                 existing_images.append('opacity')
 
-            elif 'refraction' in file:
-                
+            elif 'refraction' in file:                
                 image_node.setName('refraction')
                 standard_surface.setNamedInput('transmission',image_node,0)       
                 existing_images.append('refraction')
+            
+            elif 'arm' in file:
+                image_node.setName('arm')
+                split_node = subnet.createNode('arnold::vector_to_rgb')
+                split_node.setInput(0,image_node,0)
+                standard_surface.setNamedInput('base',split_node,1)
+                standard_surface.setNamedInput('specular_roughness',split_node,2)
+                standard_surface.setNamedInput('metalness',split_node,3)
+                existing_images.append('arm')
+
 
 
 

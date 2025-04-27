@@ -1,7 +1,9 @@
 import os
 from . import utils
-
+from importlib import reload
+reload(utils)
 print('treeToArnold imported')
+
 
 def convertMtl(standard_surface,req_mtl,tex_path):	
 	print('requested material : '+req_mtl)

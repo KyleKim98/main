@@ -79,14 +79,17 @@ def lop_setup(me,item_list,null_list):
         comp_geo_inside_node = comp_geo_node.node('sopnet/geo')
         comp_geo_node.parm('partitionattribs').set('shop_materialpath')
         
-        comp_mat_node = lopnet.createNode('componentmaterial')
-       
+        comp_mat_node = lopnet.createNode('componentmaterial')       
         
         obj_merge_node = comp_geo_inside_node.createNode('object_merge')
         obj_merge_node.parm('objpath1').set(null_list[enum].path())
-        comp_geo_inside_node.node('default').setInput(0,obj_merge_node)
+
+        attr_delete_node = comp_geo_inside_node.createNode('attribdelete')
+        attr_delete_node.parm('dtldel').set('material_list name_list')
+        attr_delete_node.setInput(0,obj_merge_node)
+        comp_geo_inside_node.node('default').setInput(0,attr_delete_node)
         shrink_node = comp_geo_inside_node.createNode('shrinkwrap::2.0')
-        shrink_node.setInput(0,obj_merge_node)
+        shrink_node.setInput(0,attr_delete_node)
         comp_geo_inside_node.node('proxy').setInput(0,shrink_node)
         
         comp_geo_inside_node.layoutChildren()
@@ -103,9 +106,8 @@ def lop_setup(me,item_list,null_list):
             primpattern = '/ASSET/geo/render/' + item_name + '/shop_materialpath_' + str(i)
             comp_mat_node.parm('primpattern'+str(enum+1)).set(primpattern)
             comp_mat_node.parm('matspecpath'+str(enum+1)).set('/ASSET/mtl/'+str(i)) 
-    if at_once:
-        comp_out_node.parm('execute').pressButton()
 
+    os.makedirs(os.path.join(save_path,asset_name))
     thumbnail_copy_path = os.path.join(save_path,asset_name,'thumbnail.png')
     if os.path.isfile(thumbnail_copy_path) == 0 and copy_thumbnail == 1:            
         for i,j,k in os.walk(pathlib.Path(tex_path).parent):
@@ -114,13 +116,16 @@ def lop_setup(me,item_list,null_list):
                     thumbnail_path = os.path.join(i,file)
                     shutil.copy(thumbnail_path,thumbnail_copy_path)
                     break
-
+                
     if post_render == 1:
         comp_out_node.parm('postrender').set(
             'exec(open("C:/Users/USER/Documents/houdini20.5/python3.11libs/KK/maxtreepostrenderscript.py").read())'
         )
         comp_out_node.parm('lpostrender').set('python')
-    
+   
+    if at_once:
+        comp_out_node.parm('execute').pressButton()
+            
     ref_node = lopnet.createNode('reference::2.0')
     ref_node.parm('filepath1').set(comp_out_node.parm('lopoutput').evalAsString())
     ref_node.parm('reload').pressButton()
